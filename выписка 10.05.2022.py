@@ -4,6 +4,9 @@ dic = {}
 page = 0
 plus = 0
 minus = 0
+'''
+main ветка
+'''
 with pdfplumber.open("выписка 10.05.2022 (2).pdf") as temp:
   try:
     # while temp.pages[page].extract_text():
