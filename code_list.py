@@ -7,7 +7,7 @@ minus = 0
 '''
 main ветка
 '''
-with pdfplumber.open("выписка 10.05.2022 (2).pdf") as temp:
+with pdfplumber.open("list_new.pdf") as temp:
   try:
     # while temp.pages[page].extract_text():
     first_page = temp.pages[page].extract_text() # выбираем стр и вытаскиваем текст
