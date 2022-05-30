@@ -4,45 +4,39 @@ dic = {}
 page = 0
 plus = 0
 minus = 0
-'''
-main ветка
-'''
-with pdfplumber.open("list_new.pdf") as temp:
+
+with pdfplumber.open("last.pdf") as temp:
   try:
     # while temp.pages[page].extract_text():
     first_page = temp.pages[page].extract_text() # выбираем стр и вытаскиваем текст
     page += 1
-    print(first_page)
-    # date = re.findall(r'\d\d[.]\d\d[.]\d{4}\s\d\d[:]\d\d', first_page)
     sum = re.findall(r'[₽].{0,}[₽]', first_page)  # сумма
-    # print(sum[0])
     description = re.findall(r'[₽]\s\w.{0,}', first_page)  # описание
     # print(description)
-    # for i in range(len(description)):
-    #   description_each =description[i][2:]  # убираем ₽
-    #   sign = sum[i][2:3]  # знак
-    #   number = float(sum[i][4:].replace(',', '.').replace(' ', ''))  # цифра
-    #
-    #   if description_each not in dic:
-    #     if sign == "+":
-    #       dic[description_each] = number
-    #       plus += number
-    #     else:
-    #       dic[description_each] = float('-'+ str(number))
-    #       minus += number
-    #   else:
-    #     if sign == "+":
-    #       dic[description_each] += number
-    #       plus += number
-    #     else:
-    #       dic[description_each] -= number
-    #       minus += number
+    for i in range(len(description)):
+      description_each =description[i][2:]  # убираем ₽
+      # print(description_each)
+      sign = sum[i][2:3]  # знак
+      # print(sign)
+      number = float(sum[i][4:].replace(',', '.').replace(' ', '').replace('₽', ''))  # цифра
+      # print(number)
+      if description_each not in dic and sign == '-':
+        dic[description_each] = float('-'+str(number))
+      elif description_each not in dic and sign == '+':
+        dic[description_each] = number
+      elif description_each in dic and sign == '-':
+        dic[description_each] -= number
+      elif description_each in dic and sign == '+':
+        dic[description_each] += number
   except IndexError:
     pass
-print(sum)
-print(plus, minus)
 
-
+# print(sum)
+# print(plus, minus)
+# for i in sum:
+#
+#   print(i)
+print(dic)
 #
 # for i in dic:
 #   print(i, dic[i])
