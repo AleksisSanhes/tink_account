@@ -2,32 +2,36 @@ import pdfplumber
 import re
 dic = {}
 page = 0
+# total = 0
 plus = 0
 minus = 0
-
 with pdfplumber.open("last.pdf") as temp:
   try:
-    # while temp.pages[page].extract_text():
-    first_page = temp.pages[page].extract_text() # выбираем стр и вытаскиваем текст
-    page += 1
-    sum = re.findall(r'[₽].{0,}[₽]', first_page)  # сумма
-    description = re.findall(r'[₽]\s\w.{0,}', first_page)  # описание
-    # print(description)
-    for i in range(len(description)):
-      description_each =description[i][2:]  # убираем ₽
-      # print(description_each)
-      sign = sum[i][2:3]  # знак
-      # print(sign)
-      number = float(sum[i][4:].replace(',', '.').replace(' ', '').replace('₽', ''))  # цифра
-      # print(number)
-      if description_each not in dic and sign == '-':
-        dic[description_each] = float('-'+str(number))
-      elif description_each not in dic and sign == '+':
-        dic[description_each] = number
-      elif description_each in dic and sign == '-':
-        dic[description_each] -= number
-      elif description_each in dic and sign == '+':
-        dic[description_each] += number
+    while temp.pages[page].extract_text():
+      first_page = temp.pages[page].extract_text() # выбираем стр и вытаскиваем текст
+      page += 1
+      sum = re.findall(r'[₽].{0,}[₽]', first_page)  # сумма
+      description = re.findall(r'[₽]\s\w.{0,}', first_page)  # описание
+      # print(first_page)
+      for i in range(len(description)):
+        description_each =description[i][2:]  # убираем ₽
+        # print(description_each)
+        sign = sum[i][2:3]  # знак
+        # print(sign)
+        number = float(sum[i][4:].replace(',', '.').replace(' ', '').replace('₽', ''))  # цифра
+        if sign == '-':
+          minus -= number
+        else:
+          plus += number
+        # print(number)
+        if description_each not in dic and sign == '-':
+          dic[description_each] = float('-'+str(number))
+        elif description_each not in dic and sign == '+':
+          dic[description_each] = number
+        elif description_each in dic and sign == '-':
+          dic[description_each] -= number
+        elif description_each in dic and sign == '+':
+          dic[description_each] += number
   except IndexError:
     pass
 
@@ -36,32 +40,45 @@ with pdfplumber.open("last.pdf") as temp:
 # for i in sum:
 #
 #   print(i)
-print(dic)
-#
+# print(dic)
+# print(plus)
+# print(minus)
+
 # for i in dic:
 #   print(i, dic[i])
+from openpyxl.reader.excel import load_workbook
+from openpyxl.styles import Font
+from openpyxl.styles.fills import PatternFill
+
+# Загружаем документ
+book = load_workbook('foo.xlsx')
+
+# Определяем рабочий лист
+ws = book.worksheets[0]
 
 
 
+# Задаем стиль для ячейки
+# _cell.font = Font(size=10, underline='single', color='FFFFFF', bold=True, italic=True)
+
+num = 1
+for descr, sum in dic.items():
+  _cell = ws['A'+str(num)] # Определяем необходимую ячейку на листе
+  _cell2 = ws['B' + str(num)]
+  _cell.value = descr
+  _cell2.value = sum
+  num += 1
+  # print(descr, '->', sum)
+
+# Задаем цвет фона
+# _cell.fill = PatternFill(bgColor="FFC7CE", fill_type = "solid")
+
+# Указываем ширину для колонки
+# ws.column_dimensions["C"].width = 60.0
+
+# Сохраняем документ
+book.save('foo.xlsx')
 
 
 
-  # print(first_page)
-  # first_page = first_page.split('\n')  # разделяем его по /n
-  #
-  # for i in first_page:
-  #   if len(i.split(' ')[0]) == 10:  # доходим до столбца "дата"
-  #     date = i.split(' ')[0]+', '+i.split(' ')[1]  # дата и время
-  #     in_out_come = i.split(' ')[3]
-  #     total = i.split()[4].split('₽') + i.split()[5].split('₽')  # первая и вторая часть суммы разъеденины
-  #     amount = float(total[0].replace(',','.') + total[1].replace(',','.'))  # складываем первую и вторую часть
-  #     # print(in_out_come, amount)
-  #     # print(total,amount)
-  #     # amount2 = i.split(' ')[5].split('₽')[0].replace(',','.').strip()
-  #     # try:
-  #     #   amount2 = str(float(amount2))
-  #     # except ValueError:
-  #     #   pass
-  #     # print(amount, amount2)
-  #     # print(i.split())
 
