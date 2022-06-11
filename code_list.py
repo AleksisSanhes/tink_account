@@ -8,14 +8,15 @@ minus = 0
 
 from abbrevia import abbreviation
 
-with pdfplumber.open("last.pdf") as temp:
+with pdfplumber.open("15.03-30.05.pdf") as temp:
     try:
         while temp.pages[page].extract_text():
             first_page = temp.pages[page].extract_text()  # выбираем стр и вытаскиваем текст
+            period = re.findall(r'период.+', first_page,)
             page += 1
             sum = re.findall(r'[₽].{0,}[₽]', first_page)  # сумма
             description = re.findall(r'[₽]\s\w.{0,}', first_page)  # описание
-            print(first_page)
+            # print(first_page)
             for i in range(len(description)):
                 description_each = description[i][2:]  # убираем ₽
                 # print(description_each)
@@ -40,7 +41,7 @@ with pdfplumber.open("last.pdf") as temp:
     except IndexError:
         pass
 
-
+print(period)
 # for i in dic:
 #     print(i, dic[i])
 
