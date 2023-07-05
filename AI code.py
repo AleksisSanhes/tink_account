@@ -2,6 +2,8 @@ from abbrevia import abbreviation
 import PyPDF2
 import re
 from datetime import date  # для сравнения дат
+from openpyxl.styles import PatternFill
+
 
 # Define a function to extract text from a PDF file
 def extract_text_from_pdf(file):
@@ -92,4 +94,23 @@ for descr, sum_date in dic.items():
     num += 1
     # print(descr, '->', SUM)
 
+
+
+# Цвет для окрашивания клетки (например, желтый)
+fill_color_carsharing = "FAEBD7"
+# Создайте объект PatternFill для задания цвета заливки
+fill = PatternFill(start_color=fill_color_carsharing, end_color=fill_color_carsharing, fill_type="solid")
+
+# Проходите по каждой строке и клетке на листе
+for row in range(2, num):
+    cell = ws["A" + str(row)]  # Определите необходимую ячейку на листе
+    description = cell.value  # Получите значение ячейки
+
+    # Проверьте, содержит ли значение ячейки определенные слова
+    if "CITYDRIVE" in description or "Яндекс Драйв" in description or "Белка" in description or "Делимобиль" in description:
+        # Окрасьте клетку, если содержит определенные слова
+        cell.fill = fill
+
 save_workbook(wb, FILE_NAME)
+
+
