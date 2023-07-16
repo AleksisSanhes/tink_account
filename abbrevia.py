@@ -38,7 +38,7 @@ def abbreviation(description_each):
     elif 'Whoosh' in description_each or 'Urent' in description_each:
         return 'Самокат'
     elif 'VKUSVILL' in description_each:
-        return 'VKUSVILL'
+        return 'Вкусвилл'
     elif 'MegaFon'.casefold() in description_each.casefold():
         return 'Мегафон'
     elif 'yandex.plus' in description_each.lower():
@@ -55,8 +55,6 @@ def abbreviation(description_each):
         return 'Яндекс Маркет'
     elif 'DIXY' in description_each:
         return 'Дикси'
-    elif 'PEREKRESTOK' in description_each:
-        return 'Перекресток'
     elif '5347132143' in description_each:
         return 'Женя'
     elif 'QSR' in description_each:
@@ -91,7 +89,7 @@ def abbreviation(description_each):
         return 'CITYDRIVE'
     elif 'SPAR' in description_each:
         return 'EUROSPAR'
-    elif 'X5' in description_each:
+    elif 'X5' or "LOYALTY Gorod" or 'PEREKRESTOK' in description_each:
         return '5ка/Перекресток'
     elif '+7918570522' in description_each:
         return 'Женек работа'

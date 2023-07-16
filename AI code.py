@@ -96,20 +96,34 @@ for descr, sum_date in dic.items():
 
 
 
-# Цвет для окрашивания клетки (например, желтый)
-fill_color_carsharing = "FAEBD7"
-# Создайте объект PatternFill для задания цвета заливки
-fill = PatternFill(start_color=fill_color_carsharing, end_color=fill_color_carsharing, fill_type="solid")
+
+fill_carsharing = PatternFill(start_color="FAEBD7", end_color="FAEBD7", fill_type="solid")
+fill_canteen = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+fill_homefood = PatternFill(start_color="008000", end_color="008000", fill_type="solid")
+fill_Telephone_internet_metro_barbershop = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
+fill_shopping_walking = PatternFill(start_color="42AAFF", end_color="42AAFF", fill_type="solid")
+fill_flatrenting = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
+fill_church = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
 
 # Проходите по каждой строке и клетке на листе
 for row in range(2, num):
     cell = ws["A" + str(row)]  # Определите необходимую ячейку на листе
     description = cell.value  # Получите значение ячейки
 
-    # Проверьте, содержит ли значение ячейки определенные слова
     if "CITYDRIVE" in description or "Яндекс Драйв" in description or "Белка" in description or "Делимобиль" in description:
-        # Окрасьте клетку, если содержит определенные слова
-        cell.fill = fill
+        cell.fill = fill_carsharing
+    if "Столовая" in description:
+        cell.fill = fill_canteen
+    if "Пятерочка" in description or "5ка/Перекресток" in description or "Вкусвилл" in description or "Магнит" in description:
+        cell.fill = fill_homefood
+    if "Тинькофф мобайл" in description or "MTS" in description or "Метро" in description or "Парикмахерская" in description:
+        cell.fill = fill_Telephone_internet_metro_barbershop
+    if "Дикси" in description or "Wildberries" in description or "EUROSPAR" in description or "Вкусно и точка" in description or "KFC" in description or "Вендинг машина" in description:
+        cell.fill = fill_shopping_walking
+    if "Аренда квартиры" in description:
+        cell.fill = fill_flatrenting
+    if "Пожертвования" in description:
+        cell.fill = fill_church
 
 save_workbook(wb, FILE_NAME)
 
