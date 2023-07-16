@@ -114,7 +114,7 @@ for row in range(2, num):
         cell.fill = fill_carsharing
     if "Столовая" in description:
         cell.fill = fill_canteen
-    if "Пятерочка" in description or "5ка/Перекресток" in description or "Вкусвилл" in description or "Магнит" in description:
+    if "5ка/Перекресток" in description or "Вкусвилл" in description or "Магнит" in description:
         cell.fill = fill_homefood
     if "Тинькофф мобайл" in description or "MTS" in description or "Метро" in description or "Парикмахерская" in description:
         cell.fill = fill_Telephone_internet_metro_barbershop
