@@ -18,13 +18,9 @@ def extract_text_from_pdf(file):
 with open('periods/1.11.2023.pdf', 'rb') as f:
     pdf_text = extract_text_from_pdf(f)
 
-# Define a regular expression pattern to match the amounts of money and descriptions
-pattern_amount_description = r'([-+]?\d{1,3}(?:[ ,]\d{3})*(?:\.\d{2})?) ₽ [^₽]*₽ (.*[^..]*)'
-pattern_date = r'(\d{2}\.\d{2}\.\d{4})\s\d{2}:\d{2}:\d{2}\s\d{2}'
-# Find all matches of the pattern in the text
-Match_amount_description = re.findall(pattern_amount_description, pdf_text)
-matches_date = re.findall(pattern_date, pdf_text)
-
+Match_amount_description = re.findall(r'([-+]?\d{1,3}(?:[ ,]\d{3})*(?:\.\d{2})?) ₽ [^₽]*₽ (.*[^..]*)', pdf_text)
+matches_date = re.findall(r'(\d{2}\.\d{2}\.\d{4})\s\d{2}:\d{2}\s\d{2}\.', pdf_text) # \s\d{2}\. - не хочет искать
+# (\d{2}\.\d{2}\.\d{4})\s\d{2}:\d{2}\s\d{2}\.\d{2}\.\d{4}
 # -------мой код---------------------
 dic = {}
 total = 0
