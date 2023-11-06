@@ -15,7 +15,7 @@ def extract_text_from_pdf(file):
     return text
 
 # Read the PDF file and extract its text
-with open('periods/1.07.2023.pdf', 'rb') as f:
+with open('periods/1.11.2023.pdf', 'rb') as f:
     pdf_text = extract_text_from_pdf(f)
 
 # Define a regular expression pattern to match the amounts of money and descriptions
@@ -39,10 +39,10 @@ def in_dic(amounts, descrip, date):
     else:
         dic[descrip] = {'amounts': amounts, 'dates': [date]}
 
-from_date = "01.06.2023".split('.')  # сюда вводи дату, с какой счет вести
+from_date = "01.10.2023".split('.')  # сюда вводи дату, с какой счет вести
 from_date = date(int(from_date[2]), int(from_date[1]), int(from_date[0]))
 
-upto_date = "01.07.2023".split('.')  # сюда вводи дату, с какой счет вести
+upto_date = "01.11.2023".split('.')  # сюда вводи дату, с какой счет вести
 upto_date = date(int(upto_date[2]), int(upto_date[1]), int(upto_date[0]))
 
 for match in range(len(matches_date)):
