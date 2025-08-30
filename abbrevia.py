@@ -94,8 +94,8 @@ def abbreviation(description_each):
         return 'Женек работа'
     elif '+79147013535' in description_each:
         return 'Цветы маме'
-    # elif 'X5' in description_each:
-    #     return '5ка/Перекресток'
+    elif 'drive' in description_each:
+        return 'Yadrive'
     # elif 'X5' in description_each:
     #     return '5ка/Перекресток'
     return description_each

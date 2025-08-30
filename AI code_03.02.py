@@ -1,9 +1,8 @@
 from abbrevia import abbreviation
 import PyPDF2
 import re
-from datetime import date  # для сравнения дат
+from datetime import date  # for date comparison
 from openpyxl.styles import PatternFill
-
 
 # Define a function to extract text from a PDF file
 def extract_text_from_pdf(file):
@@ -15,46 +14,47 @@ def extract_text_from_pdf(file):
     return text
 
 # Read the PDF file and extract its text
-with open('periods/1.11.2023.pdf', 'rb') as f:
+with open('periods/1.03.2024.pdf', 'rb') as f:
     pdf_text = extract_text_from_pdf(f)
 
-# print(pdf_text)
 Match_amount_description = re.findall(r'([-+]?\d{1,3}(?:[ ,]\d{3})*(?:\.\d{2})?) ₽ [^₽]*₽ (.*[^..]*)', pdf_text)
-matches_date = re.findall(r'(\d{2}\.\d{2}\.\d{4})\s\d{2}:\d{2}[+-]', pdf_text) # \s\d{2}\. - не хочет искать
-# -------мой код---------------------
+matches_date = re.findall(r'(\d{2}\.\d{2}\.\d{4})\s\d{2}:\d{2}[+-]', pdf_text)
+
+# Initialize the dictionary structure
 dic = {}
-total = 0
 
-def in_dic(amounts, descrip, date):
-    if descrip in dic:
-        if str(amounts)[0] == '-':
-            dic[descrip]['amounts'] = dic[descrip]['amounts'] + amounts
-        else:
-            dic[descrip]['amounts'] += amounts
-        dic[descrip]['dates'].append(date)
-    else:
-        dic[descrip] = {'amounts': amounts, 'dates': [date]}
-
-from_date = "01.10.2023".split('.')  # сюда вводи дату, с какой счет вести
+from_date = "01.02.2024".split('.')  # enter the start date here
 from_date = date(int(from_date[2]), int(from_date[1]), int(from_date[0]))
 
-upto_date = "01.11.2023".split('.')  # сюда вводи дату, с какой счет вести
+upto_date = "01.03.2024".split('.')  # enter the end date here
 upto_date = date(int(upto_date[2]), int(upto_date[1]), int(upto_date[0]))
 
 for match in range(len(matches_date)):
     Match_amount_description_string = Match_amount_description[match]
-    amount_string = float(Match_amount_description_string[0].replace(',', '').replace(' ', '')) # Extract the amounts of money from the matches and convert them to float numbers
-    description_string = abbreviation(Match_amount_description_string[1][:-3])  # Extract the descriptions from the matches
+    amount_string = float(Match_amount_description_string[0].replace(',', '').replace(' ', ''))
+    description_string = abbreviation(Match_amount_description_string[1][:-3])
     date_string = matches_date[match]
     date_int = date_string.split('.')
     date_int = date(int(date_int[2]), int(date_int[1]), int(date_int[0]))
+
+    # Check if the date is within the specified range
     if from_date <= date_int < upto_date:
-        in_dic(amount_string, description_string, date_string)
-        total += amount_string # считает правильно получается
+        if description_string not in dic:
+            dic[description_string] = {'amountsPlus': [], 'amountsMinus': [], 'totalminus': 0, 'dates': []}
+
+        if amount_string < 0:
+            dic[description_string]['amountsMinus'].append(amount_string)
+            dic[description_string]['totalminus'] += amount_string
+        else:
+            dic[description_string]['amountsPlus'].append(amount_string)
+
+        dic[description_string]['dates'].append(date_string)
 
 print(dic)
-print(total)
-#
+
+
+
+
 # ---------------------Запись в файл--------------------------#
 
 from openpyxl.writer.excel import save_workbook
@@ -75,22 +75,27 @@ num = 2
 _cell = ws['A1']
 _cell2 = ws['B1']
 _cell3 = ws['C1']
+_cell4 = ws['D1']
+_cell5 = ws['E1']
 
 _cell.value = 'Описание'
-_cell2.value = 'Сумма'
-_cell3.value = 'Дата'
-
+_cell2.value = 'Сумма Plus'
+_cell3.value = 'Сумма Minus'
+_cell4.value = 'Сумма MinusTotal'
+_cell5.value = 'Дата'
+#
 for descr, sum_date in dic.items():
-    _cell = ws['A' + str(num)]  # Определяем необходимую ячейку на листе
+    _cell = ws['A' + str(num)]  # Define the necessary cell on the sheet
     _cell2 = ws['B' + str(num)]
     _cell3 = ws['C' + str(num)]
-    _cell.value = descr  # Пишем в ячейке
-    _cell2.value = sum_date["amounts"]
-    _cell3.value = str(sum_date['dates'])
+    _cell4 = ws['D' + str(num)]
+    _cell5 = ws['E' + str(num)]
+    _cell.value = descr  # Write in the cell
+    _cell2.value = ", ".join(map(lambda x: str(x).replace('.', ','), sum_date["amountsPlus"]))
+    _cell3.value = ", ".join(map(lambda x: str(x).replace('.', ','), sum_date["amountsMinus"]))
+    _cell4.value = ", ".join(map(lambda x: str(x).replace('.', ','), [sum_date["totalminus"]]))
+    _cell5.value = str(sum_date['dates'])
     num += 1
-    # print(descr, '->', SUM)
-
-
 
 
 fill_carsharing = PatternFill(start_color="FAEBD7", end_color="FAEBD7", fill_type="solid")
@@ -120,7 +125,8 @@ for row in range(2, num):
         cell.fill = fill_flatrenting
     if "Пожертвования" in description:
         cell.fill = fill_church
+#
 
-save_workbook(wb, FILE_NAME)
 
-
+# Save the workbook to the specified file
+wb.save(FILE_NAME)
